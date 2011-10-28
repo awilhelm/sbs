@@ -1,0 +1,5 @@
+This is my Simple Multiple Programs Builder, a set of scripts I wrote to build many programs with just one command. When working on multiple programs and libraries, you have to `make && make install` each component that changed, in the correct order. With this tool you just run build.sh and watch as the program you work on is build and run.
+
+To use it, just create a symbolic link my-project/ to your project's source code directory and a mini-makefile my-project.mk and drop them in the src/ directory, and then call build.sh.
+
+Please note that this is not intended to be portable or generic or anything. This is intended to be small and easy to hack.
