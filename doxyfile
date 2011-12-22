@@ -224,7 +224,7 @@ RECURSIVE = YES
 # directories that are symbolic links (a Unix file system feature) are excluded
 # from the input.
 
-EXCLUDE_SYMLINKS = YES
+EXCLUDE_SYMLINKS = NO
 
 # If the SOURCE_BROWSER tag is set to YES then a list of source files will
 # be generated. Documented entities will be cross-referenced with these sources.

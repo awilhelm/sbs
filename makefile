@@ -87,7 +87,7 @@ export MAKEFLAGS +=\
 
 find binary = $(patsubst $</%,%,$(firstword $(wildcard $1)))
 
-cmd. = cd $< && $1 $(call find binary,$(basename $(wildcard $</$(app)/*.o))) $(args.$(args))
+cmd. = cd $< && $1 $(call find binary,$(basename $(basename $(wildcard $</$(app)/*.o)))) $(args.$(args))
 cmd.aroccam = cd $< && $1 effibox --no-prompt --no-catch -a $(call find binary,$</$(app)/*.so) $(args.$(args))
 
 exec: release; $(call cmd.$(cmd), exec)
