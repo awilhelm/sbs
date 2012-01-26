@@ -1,6 +1,7 @@
 #!/bin/sh
 
 reset
+ulimit -c unlimited
 
 build() {
 	cd $(dirname $(readlink -f "$0"))

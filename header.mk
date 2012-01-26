@@ -21,7 +21,7 @@ all.ui = $(shell find $(VPATH) -name '*.ui')
 
 all.ui.h = $(patsubst $(VPATH)%,%.h,$(all.ui))
 
-rules.moc = $(foreach *,$(all.cc),$(eval $(patsubst $(VPATH)%.cc,%.o,$*): $(patsubst $(VPATH)%.cc, %.moc.h, $*)))
+rules.moc = $(foreach *,$(all.cc),$(eval $(patsubst $(VPATH)%.cc,%.o,$*): $(patsubst $(VPATH)%.cc,%.moc,$*)))
 
 rules.ui = $(eval $(patsubst $(VPATH)%,%,$(all.cc)): $(all.ui.h))
 

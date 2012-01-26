@@ -5,9 +5,9 @@
 
 %.moc.cc: %; moc -o $@ $<
 
-%.moc.h: %.cc; moc -o $@ $<
+%.moc: %.cc; moc -o $@ $<
 
-%.ui.h: %.ui; uic -o $@ $<
+%.ui.h: %.ui; sed "s:\(<header>\):\1$(VPATH)$(@D)/:" $< | uic -o $@
 
 %.qrc.cc: %.qrc
 	@$(foreach file,$(filter $(VPATH)%,$^),ln -fs $(file) $(patsubst $(VPATH)%,%,$(file));)
