@@ -1,5 +1,9 @@
 
-%.so:; $(LINK.o) $(LDLIBS) -shared -fpic -o $@ $^
+$(DESTDIR)/%:
+	@ mkdir -p $(@D)
+	install $< $@
+
+%.so:; $(LINK.o) -shared -fPIC -o $@ $^ $(LDLIBS)
 
 %.a:; $(AR) rcs $@ $^
 

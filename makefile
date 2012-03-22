@@ -4,12 +4,10 @@ goals := $(notdir $(basename $(wildcard src/*.mk)))
 	@ echo Signature: 8a477f597d28d172789f06886806bc55 >$@/CACHEDIR.TAG
 
 $(goals):
-	@ mkdir -p $(patsubst $(VPATH)%,$(DESTDIR)/$@/%,$(shell find $(VPATH) -type d))
-	@ $(MAKE) -C $(DESTDIR)/$@ -f ../../header.mk -f ../../src/$@.mk -f ../../footer.mk
+	@ mkdir -p $(patsubst $(VPATH)%,$(DESTDIR)/build/$@/%,$(VPATH) $(shell find $(VPATH) -type d 2>/dev/null))
+	@ $(MAKE) -C $(DESTDIR)/build/$@ -f $(cwd)/header.mk -f $(CURDIR)/src/$@.mk -f $(cwd)/footer.mk DESTDIR=$(CURDIR)/$(DESTDIR)/install
 
 export VPATH = $(CURDIR)/src/$@/
-
-export LD_LIBRARY_PATH := .:$(subst $() $(),:,$(goals))
 
 release: DESTDIR := release
 debug: DESTDIR := debug
@@ -23,11 +21,12 @@ graph-example graph-plugins: graph
 # OPTIONS DE COMPILATION GLOBALES
 
 export CPPFLAGS +=\
-	-MMD\
+	-MD\
 	-MP\
 	-Wall\
 	-Wextra\
 	-Werror\
+	-I$$(DESTDIR)/include\
 
 export CFLAGS +=\
 	-std=c99\
@@ -69,7 +68,9 @@ debug: FFLAGS +=\
 	-g3\
 
 export LDFLAGS +=\
-	-Wl,--unresolved-symbols=ignore-in-shared-libs,--fatal-warnings\
+	-Wl,--unresolved-symbols=ignore-in-shared-libs\
+	-Wl,--fatal-warnings\
+	-L$$(DESTDIR)/lib\
 
 release: LDFLAGS +=\
 	-O3\
@@ -85,12 +86,15 @@ export MAKEFLAGS +=\
 
 # PROFILS D'EXÉCUTION
 
+export LD_LIBRARY_PATH = $(CURDIR)/$</install/lib
+
 find binary = $(patsubst $</%,%,$(firstword $(wildcard $1)))
 
-cmd. = cd $< && $1 $(call find binary,$(basename $(basename $(wildcard $</$(app)/*.o)))) $(args.$(args))
-cmd.aroccam = cd $< && $1 effibox --no-prompt --no-catch -a $(call find binary,$</$(app)/*.so) $(args.$(args))
+cmd. = cd $< && $1 $(call find binary,$(basename $(basename $(wildcard $</build/$(app)/*.o)))) $(args.$(args))
+cmd.aroccam = cd $< && $1 effibox --no-prompt --no-catch -a $(call find binary,$</build/$(app)/*.so) $(args.$(args))
 
 exec: release; $(call cmd.$(cmd), exec)
+exec-dbg: debug; $(call cmd.$(cmd), exec)
 gdb: debug; $(call cmd.$(cmd), gdb -q --args)
 memcheck: debug; $(call cmd.$(cmd), valgrind --tool=memcheck --xml=yes --xml-file=memcheck.xml)
 callgrind: release; $(call cmd.$(cmd), valgrind --tool=callgrind)
