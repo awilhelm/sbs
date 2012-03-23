@@ -4,84 +4,16 @@ goals := $(notdir $(basename $(wildcard src/*.mk)))
 	@ echo Signature: 8a477f597d28d172789f06886806bc55 >$@/CACHEDIR.TAG
 
 $(goals):
-	@ mkdir -p $(patsubst $(VPATH)%,$(DESTDIR)/build/$@/%,$(VPATH) $(shell find $(VPATH) -type d 2>/dev/null))
-	@ $(MAKE) -C $(DESTDIR)/build/$@ -f $(cwd)/header.mk -f $(CURDIR)/src/$@.mk -f $(cwd)/footer.mk DESTDIR=$(CURDIR)/$(DESTDIR)/install
+	@ mkdir -p $(patsubst src/$@/%,$(mode)/build/$@/%,src/$@/ $(shell find src/$@/ -type d 2>/dev/null))
+	@ $(MAKE) -C $(mode)/build/$@ -f $(cwd)/header.mk -f $(CURDIR)/src/$@.mk DESTDIR=$(CURDIR)/$(mode)/install/ VPATH=$(CURDIR)/src/$@/ -I $(cwd) .$(mode)
 
-export VPATH = $(CURDIR)/src/$@/
-
-release: DESTDIR := release
-debug: DESTDIR := debug
+release: mode := release
+debug: mode := debug
 
 
 # DÉPENDANCES DES PROJETS
 
 graph-example graph-plugins: graph
-
-
-# OPTIONS DE COMPILATION GLOBALES
-
-export CPPFLAGS +=\
-	-MD\
-	-MP\
-	-Wall\
-	-Wextra\
-	-Werror\
-	-I$$(DESTDIR)/include\
-
-export CFLAGS +=\
-	-std=c99\
-	-march=native\
-	-Wconversion\
-
-release: CFLAGS +=\
-	-O3\
-	-g0\
-
-debug: CFLAGS +=\
-	-O0\
-	-g3\
-
-export CXXFLAGS +=\
-	-march=native\
-	-Wconversion\
-	-Wdisabled-optimization\
-
-release: CXXFLAGS +=\
-	-O3\
-	-g0\
-
-debug: CXXFLAGS +=\
-	-O0\
-	-g3\
-
-export FC := gfortran
-
-export FFLAGS +=\
-	-march=native\
-
-release: FFLAGS +=\
-	-O3\
-	-g0\
-
-debug: FFLAGS +=\
-	-O0\
-	-g3\
-
-export LDFLAGS +=\
-	-Wl,--unresolved-symbols=ignore-in-shared-libs\
-	-Wl,--fatal-warnings\
-	-L$$(DESTDIR)/lib\
-
-release: LDFLAGS +=\
-	-O3\
-	-g0\
-
-debug: LDFLAGS +=\
-	-O0\
-	-g3\
-
-export MAKEFLAGS +=\
-	--no-print-directory\
 
 
 # PROFILS D'EXÉCUTION

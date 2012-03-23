@@ -1,3 +1,4 @@
+.release .debug: all
 
 all.h = $(shell find $(VPATH) -name '*.h' -o -name '*.hh' -o -name '*.hpp')
 
@@ -11,21 +12,77 @@ all.s = $(shell find $(VPATH) -iname '*.s')
 
 all.o = $(patsubst $(VPATH)%,%.o,$(basename $(all.c) $(all.cc) $(all.f) $(all.s)))
 
-all.moc.o = $(patsubst $(VPATH)%,%.moc.o,$(all.h))
-
-all.qrc = $(shell find $(VPATH) -name '*.qrc')
-
-all.qrc.o = $(patsubst $(VPATH)%,%.o,$(all.qrc))
-
-all.ui = $(shell find $(VPATH) -name '*.ui')
-
-all.ui.h = $(patsubst $(VPATH)%,%.h,$(all.ui))
-
-rules.moc = $(foreach *,$(all.cc),$(eval $(patsubst $(VPATH)%.cc,%.o,$*): $(patsubst $(VPATH)%.cc,%.moc,$*)))
-
-rules.ui = $(eval $(patsubst $(VPATH)%,%,$(all.cc)): $(all.ui.h))
-
-rules.qrc = $(foreach *,$(all.qrc),$(eval $(patsubst $(VPATH)%,%.cc,$*): $(addprefix $(dir $(patsubst $(VPATH)%,%,$*)),$(shell perl -e '$$/ = undef; $$_ = <>; s/^.*?<file.*?>(.*)<\/file>.*$$/$$1/s; s/<\/file>.*?<file.*?>/\n/gs; print' $*))))
-
 install = $(foreach 3,$1,$(foreach 4,$(patsubst %,$(DESTDIR)/$2,$(patsubst $(VPATH)%,%,$3)),$(eval all: $4)$(eval $4: $3)))
+
+$(DESTDIR)/%:
+	@ mkdir -p $(@D)
+	install $< $@
+
+%.so:; $(LINK.o) -shared -fPIC -o $@ $^ $(LDLIBS)
+
+%.a:; $(AR) rcs $@ $^
+
+CPPFLAGS +=\
+	-MD\
+	-MP\
+	-Wall\
+	-Wextra\
+	-Werror\
+	-I$(DESTDIR)/include\
+
+CFLAGS +=\
+	-std=c99\
+	-march=native\
+	-Wconversion\
+
+.release: CFLAGS +=\
+	-O3\
+	-g0\
+
+.debug: CFLAGS +=\
+	-O0\
+	-g3\
+
+CXXFLAGS +=\
+	-march=native\
+	-Wconversion\
+	-Wdisabled-optimization\
+
+.release: CXXFLAGS +=\
+	-O3\
+	-g0\
+
+.debug: CXXFLAGS +=\
+	-O0\
+	-g3\
+
+FC := gfortran
+
+FFLAGS +=\
+	-march=native\
+
+.release: FFLAGS +=\
+	-O3\
+	-g0\
+
+.debug: FFLAGS +=\
+	-O0\
+	-g3\
+
+LDFLAGS +=\
+	-Wl,--unresolved-symbols=ignore-in-shared-libs\
+	-Wl,--fatal-warnings\
+	-L$(DESTDIR)/lib\
+
+.release: LDFLAGS +=\
+	-O3\
+	-g0\
+
+.debug: LDFLAGS +=\
+	-O0\
+	-g3\
+
+.DELETE_ON_ERROR:
+
+include $(shell find -name '*.d')
 
