@@ -3,6 +3,7 @@
 s/.*\s-o\s(\S+).*/[32m$1/;
 s/^ar\s.*\s(\S+\.a)\s.*/[32m$1/;
 s/^lrelease\s-qm\s(\S+).*/[32m$1/;
+s/^(install|mv|OgreXMLConverter)\s.*\s(\S+).*/[32m$2/;
 
 s/$/[m/;
 

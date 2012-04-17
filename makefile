@@ -1,7 +1,6 @@
 goals := $(notdir $(basename $(wildcard src/*.mk)))
 
 .PHONY release debug: $(goals)
-	@ echo Signature: 8a477f597d28d172789f06886806bc55 >$@/CACHEDIR.TAG
 
 $(goals):
 	@ mkdir -p $(patsubst src/$@/%,$(mode)/build/$@/%,src/$@/ $(shell find src/$@/ -type d 2>/dev/null))
@@ -20,16 +19,14 @@ graph-example graph-plugins: graph
 
 export LD_LIBRARY_PATH = $(CURDIR)/$</install/lib
 
-find binary = $(patsubst $</%,%,$(firstword $(wildcard $1)))
+cmd. = $(firstword $(wildcard $(basename $(basename $(wildcard $</build/$(app)/*.o))))) $(args.$(args))
+cmd.aroccam = effibox --no-prompt --no-catch -a $(firstword $(wildcard $</build/$(app)/*.so)) $(args.$(args))
 
-cmd. = cd $< && $1 $(call find binary,$(basename $(basename $(wildcard $</build/$(app)/*.o)))) $(args.$(args))
-cmd.aroccam = cd $< && $1 effibox --no-prompt --no-catch -a $(call find binary,$</build/$(app)/*.so) $(args.$(args))
-
-exec: release; $(call cmd.$(cmd), exec)
-exec-dbg: debug; $(call cmd.$(cmd), exec)
-gdb: debug; $(call cmd.$(cmd), gdb -q --args)
-memcheck: debug; $(call cmd.$(cmd), valgrind --tool=memcheck --xml=yes --xml-file=memcheck.xml)
-callgrind: release; $(call cmd.$(cmd), valgrind --tool=callgrind)
-drd: debug; $(call cmd.$(cmd), G_SLICE=always-malloc valgrind --tool=drd --log-file=drd.log)
-cde: release; $(call cmd.$(cmd), cde)
+exec: release; exec $(cmd.$(cmd))
+exec-dbg: debug; exec $(cmd.$(cmd))
+gdb: debug; gdb -q --args $(cmd.$(cmd))
+memcheck: debug; valgrind --tool=memcheck --xml=yes --xml-file=memcheck.xml $(cmd.$(cmd))
+callgrind: release; valgrind --tool=callgrind $(cmd.$(cmd))
+drd: debug; G_SLICE=always-malloc valgrind --tool=drd --log-file=drd.log $(cmd.$(cmd))
+cde: release; cde $(cmd.$(cmd))
 
