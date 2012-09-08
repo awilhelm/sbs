@@ -1,0 +1,42 @@
+#!/usr/bin/make -f
+
+.PHONY: $(MAKECMDGOALS) {all} {none}
+
+this := $(firstword $(MAKEFILE_LIST))
+base := $(abspath $(this)/../..)
+
+include $(base)/include/smpb/common.mk
+
+ifndef smpb-real
+
+{none}: ; @:
+
+$(MAKECMDGOALS): {all}; @:
+
+{all}: ; @ $(MAKE)\
+		--no-print-directory\
+		-f$(this)\
+		-I$(base)/include\
+		-j$(shell grep -c '^processor	' /proc/cpuinfo)\
+		$(addsuffix /dummy,$(call makefilepath,$(MAKECMDGOALS)))\
+		smpb-real=true
+
+else
+
+include $(base)/lib/smpb/*.mk
+
+objdir = $(prefix)/xxx$(@D)
+srcdir = $(abspath $(dir $(@D)))
+
+$(MAKECMDGOALS):
+	@ mkdir -p $(objdir)
+	@ $(MAKE)\
+		-C$(objdir)\
+		-f$(@D)\
+		prefix=$(prefix)\
+		srcdir=$(srcdir)\
+		arch='$(patsubst %,{%},$(or $(arch.$(do)),default))'\
+		$(filter.$(filter))
+	@ $(do.$(do)) $(filter.$(do))
+
+endif
