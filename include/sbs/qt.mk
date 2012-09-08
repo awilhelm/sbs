@@ -1,7 +1,7 @@
-ifndef include/smpb/qt.mk
-include/smpb/qt.mk = done
+ifndef include/sbs/qt.mk
+include/sbs/qt.mk = done
 
-include smpb/gcc.mk
+include sbs/gcc.mk
 
 %.pre: % | %/..; @ sed 's:^[[:blank:]]*#[[:blank:]]*\(include\b.*\.\(moc\|ui\.h\)\|pragma[[:blank:]]\{1,\}once\)\b.*::' $< >$@ || $(clean)
 

@@ -1,7 +1,7 @@
-ifndef include/smpb/cmake.mk
-include/smpb/cmake.mk = done
+ifndef include/sbs/cmake.mk
+include/sbs/cmake.mk = done
 
-include smpb/base.mk
+include sbs/base.mk
 
 Makefile: CMakeLists.txt; cmake $(<D) $(CMAKEFLAGS) #$(tag)
 

@@ -1,7 +1,7 @@
-ifndef include/smpb/base.mk
-include/smpb/base.mk = done
+ifndef include/sbs/base.mk
+include/sbs/base.mk = done
 
-include smpb/common.mk
+include sbs/common.mk
 
 clean = { status=$$?; $(RM) $@; exit $$status; }
 

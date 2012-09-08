@@ -1,7 +1,7 @@
-ifndef include/smpb/test.mk
-include/smpb/test.mk = done
+ifndef include/sbs/test.mk
+include/sbs/test.mk = done
 
-include smpb/base.mk
+include sbs/base.mk
 
 all.in := $(filter %.in,$(all))
 all.out.old := $(all.in:in=out.old)

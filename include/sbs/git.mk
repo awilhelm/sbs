@@ -1,5 +1,5 @@
-ifndef include/smpb/git.mk
-include/smpb/git.mk = done
+ifndef include/sbs/git.mk
+include/sbs/git.mk = done
 
 GIT_DIR := $(shell cd $(srcdir) && cd $$(git rev-parse --git-dir) && pwd)
 

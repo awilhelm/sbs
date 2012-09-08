@@ -1,7 +1,7 @@
-ifndef include/smpb/gcc.mk
-include/smpb/gcc.mk = done
+ifndef include/sbs/gcc.mk
+include/sbs/gcc.mk = done
 
-include smpb/base.mk
+include sbs/base.mk
 include $(shell find ! -path '*/.*' ! -path '* *' -name '*.d')
 
 all.c = $(filter %.c,$(all))

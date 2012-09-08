@@ -1,7 +1,7 @@
-ifndef include/smpb/physx.mk
-include/smpb/physx.mk = done
+ifndef include/sbs/physx.mk
+include/sbs/physx.mk = done
 
-include smpb/gcc.mk
+include sbs/gcc.mk
 
 CPPFLAGS +=\
 	$(addprefix -isystem,$(shell find $(includedir)/physx -type d))\

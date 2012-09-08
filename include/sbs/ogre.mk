@@ -1,7 +1,7 @@
-ifndef include/smpb/ogre.mk
-include/smpb/ogre.mk = done
+ifndef include/sbs/ogre.mk
+include/sbs/ogre.mk = done
 
-include smpb/gcc.mk
+include sbs/gcc.mk
 
 all.mesh.xml = $(filter %.mesh.xml,$(all))
 all.mesh = $(all.mesh.xml:.xml=)

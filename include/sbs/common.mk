@@ -1,5 +1,5 @@
-ifndef include/smpb/common.mk
-include/smpb/common.mk = done
+ifndef include/sbs/common.mk
+include/sbs/common.mk = done
 
 prefix = $(PWD)/$(arch.$(do))
 bindir = $(prefix)/bin

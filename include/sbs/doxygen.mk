@@ -1,7 +1,7 @@
-ifndef include/smpb/doxygen.mk
-include/smpb/doxygen.mk = done
+ifndef include/sbs/doxygen.mk
+include/sbs/doxygen.mk = done
 
-include smpb/base.mk
+include sbs/base.mk
 
 %/doxyfile.done: %/doxyfile | %/dir/..
 	cd $(@D) && { $(foreach *,$(DOXYFILE),echo $*;) } | cat - $< | doxygen - #$(tag)
